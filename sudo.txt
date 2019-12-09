@@ -1,0 +1,22 @@
+//Upload box
+Create dialog box
+Add explanation text to dialog box
+Add button to upload an image from computer
+  Upon button press, set variable *image* to the uploaded image
+  Upon button press, switch to new dialog box
+
+//Options box
+Upon dialog box creation, create explanation text for button "Resize to 255 pixels?"
+Upon dialog box creation, create button
+  Upon button press, toggle variable *resize*
+Upon dialog box creation, create explanation text for button "Add size header?"
+Upon dialog box creation, create button
+  Upon button press, toggle variable *header*
+Upon dialog box creation, create confirm button
+  Upon button press, start next chain of things
+
+//Next chain of things
+Set variable *width* to image width
+Set variable *height* to image height
+if (*height* > *width*) and (resize == true) and (height > 255) set *resize percent*=*height*
+if (*height* <= *width*) and (resize == true) and (width > 255) set *resize percent*=*width*
