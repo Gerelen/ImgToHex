@@ -18,7 +18,6 @@ class Window():
 		self.img_hex.save(file2)
 
 	def window_menu(self):
-
 		self.file = Menu(self.menu)
 		self.file.add_command(label='Upload Image', command=self.upload_image)
 		self.file.add_command(label='Convert To Hex')
