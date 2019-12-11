@@ -5,6 +5,7 @@ from tkinter.filedialog import askopenfilename
 import cv2
 import os, glob
 import numpy as np
+import io
 
 class Window():
 
@@ -14,6 +15,7 @@ class Window():
 		self.menu = Menu(root)
 		root.config(menu=self.menu)
 		self.ImSet = ImageSetup()
+		self.output = io.BytesIO()
 
 	def window_menu(self):
 		self.file = Menu(self.menu)
@@ -32,7 +34,7 @@ class Window():
 	def return_if_statetements(self):
 		#Add later method to turn on and off
 		self.return_if =  True
-		print('Return set to {}'.format(self.return_if))
+		print('Resize set to {}'.format(self.return_if))
 		return self.return_if
 
 
@@ -61,9 +63,29 @@ class Window():
 		self.img_hex = PIL.Image.fromarray(self.img_hex)
 		self.img_hex = self.img_hex.rotate(180)
 		self.img_hex = self.img_hex.transpose(PIL.Image.FLIP_LEFT_RIGHT)
-		self.img_hex.save('image.bmp')
+		self.img_hex = self.img_hex.save(self.output, format='BMP')
+		self.contents = self.output.getvalue() #Image in HEX
+		self.img_content = self.returnHexStringContent() #Height,Width, Pixel in Bytes
+		print(self.img_content)
+		self.output.close()
+		print(self.contents)
+		self.img_content += self.contents
+		with open('img.txt', 'wb') as self.f:
+			self.f.write(self.img_content)
+		self.f.close()
+		#with open('something.txt', 'wb') as f:
+		#content = f.write(self.img_hex)
 		#Save image on buffer
 		#Save buffer as txt
+
+	def returnHexStringContent(self):
+		self.img_height = hex(self.i.size[1])
+		self.img_width = hex(self.i.size[0])
+		self.img_pixel = hex(24)
+		self.d = bytes(self.img_width, encoding='ASCII')
+		self.d += bytes(self.img_height, encoding='ASCII')
+		self.d += bytes(self.img_pixel, encoding='ASCII')
+		return self.d
 
 	def ConvertColors(self, color_array):
 		self.color_array = color_array
