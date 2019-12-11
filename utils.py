@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 import cv2
 import os, glob
+import numpy as np
 
 class Window():
 
@@ -18,7 +19,7 @@ class Window():
 		self.file = Menu(self.menu)
 		self.file.add_command(label='Upload Image', command=self.upload_image)
 		self.file.add_command(label='Resize 255?', command=self.return_if_statetements)
-		self.file.add_command(label='Convert To Hex', command=self.ImSet.BMP2Img)
+		self.file.add_command(label='Convert To Hex', command=self.PNG2Hex)
 		self.menu.add_cascade(label='File', menu=self.file)
 
 	def hex_window(self):
@@ -33,6 +34,8 @@ class Window():
 		self.return_if =  True
 		print('Return set to {}'.format(self.return_if))
 		return self.return_if
+
+
 
 	def upload_image(self):
 		self.image_file = askopenfilename(initialdir = "/", title = "Select File", filetypes = (('png files', "*.png"), ("All Files", "*.*")))
@@ -51,6 +54,27 @@ class Window():
 		self.img = Label(root, image=self.render)
 		self.img.image = self.render
 		self.img.place(x=0,y=0)
+
+	def PNG2Hex(self):
+		#self.img_hex = self.img_hex[:,:, [0,2]] = self.img_hex[:,:,[2,0]]
+		self.img_hex = self.ConvertColors(self.i)
+		self.img_hex = PIL.Image.fromarray(self.img_hex)
+		self.img_hex = self.img_hex.rotate(180)
+		self.img_hex = self.img_hex.transpose(PIL.Image.FLIP_LEFT_RIGHT)
+		self.img_hex.save('image.bmp')
+		#Save image on buffer
+		#Save buffer as txt
+
+	def ConvertColors(self, color_array):
+		self.color_array = color_array
+		self.color_array = np.array(self.color_array)
+		self.red = self.color_array[:,:,2].copy()
+		self.blue = self.color_array[:,:,0].copy()
+
+		self.color_array[:,:,0] = self.red
+		self.color_array[:,:,2] = self.blue
+
+		return self.color_array
 
 class ImageSetup():
 
@@ -73,18 +97,6 @@ class ImageSetup():
 
 		return self.image_w_resize
 
-	def ImageToBMP(self,file1,file2):
-		#Upload Image and save as BMP
-		#Switch red and blue colors
-		#Rotate 180
-		#Flip Horizontally
-		self.img_hex = PIL.Image.open(file1)
-		self.img_hex.save('image.bmp')
-
-	def BMP2Img(self, bmp_image):
-
-
-
 root = Tk()
 root.geometry('260x260')
 app = Window(root)
@@ -93,7 +105,6 @@ root.mainloop()
 
 """
 TODO LIST:
-
 Delete old image when creating new image
 Move image over in window
 Make return_if_statements a switch
