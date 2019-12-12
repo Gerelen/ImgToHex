@@ -60,18 +60,19 @@ class Window():
 	def PNG2Hex(self):
 		#self.img_hex = self.img_hex[:,:, [0,2]] = self.img_hex[:,:,[2,0]]
 		self.img_hex = self.ConvertColors(self.i)
-		self.img_hex = PIL.Image.fromarray(self.img_hex)
+		self.img_hex = PIL.Image.fromarray(self.img_hex, mode='RGB')
+		self.copy_img_hex = np.array(self.img_hex) #Get bit depth of image
 		self.img_hex = self.img_hex.rotate(180)
 		self.img_hex = self.img_hex.transpose(PIL.Image.FLIP_LEFT_RIGHT)
 		self.img_hex = self.img_hex.save(self.output, format='BMP')
 		self.contents = self.output.getvalue() #Image in HEX
 		self.img_content = self.returnHexStringContent() #Height,Width, Pixel in Bytes
-		print(self.img_content)
+		print('Images width: {}'.format(self.i.size[0]),	
+			  "Images height: {}".format(self.i.size[1]),
+			  "Image Bit Depth: {}".format(self.copy_img_hex.dtype))
 		self.output.close()
-		print(self.contents)
-		self.img_content += self.contents
 		with open('img.txt', 'wb') as self.f:
-			self.f.write(self.img_content)
+			self.f.write(self.contents)
 		self.f.close()
 		#with open('something.txt', 'wb') as f:
 		#content = f.write(self.img_hex)
@@ -90,6 +91,7 @@ class Window():
 	def ConvertColors(self, color_array):
 		self.color_array = color_array
 		self.color_array = np.array(self.color_array)
+		self.color_array = self.color_array.astype(np.int16)
 		self.red = self.color_array[:,:,2].copy()
 		self.blue = self.color_array[:,:,0].copy()
 
